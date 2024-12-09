@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, buttonVariants } from "./ui/button";
 import DropMenu from "./DropMenu";
-
+import { useTheme } from "next-themes";
 export default function Navbar() {
+  const { theme, setTheme } = useTheme();
+  // Step 1: State to manage the menu visibility
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Step 2: Function to toggle the menu
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark"); // Toggle between light and dark
+  };
+
   return (
     <>
       <nav className="bg-inherit dark:bg-gray-900 w-full z-20 top-0 start-0 border-b border-gray-200 dark:border-gray-600">
@@ -11,20 +23,13 @@ export default function Navbar() {
             <strong>Tailwind</strong> css
           </div>
           <div className="flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
-            <Button
-              className={"bg-white mr-2 text-slate-950 border-solid border-2"}
-            >
-              Log in
-            </Button>
-            <Button className={buttonVariants({ variant: "dark" })}>
-              Sign up
-            </Button>
             <button
+              onClick={toggleMenu}
               data-collapse-toggle="navbar-sticky"
               type="button"
               className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               aria-controls="navbar-sticky"
-              aria-expanded="false"
+              aria-expanded={isOpen}
             >
               <span className="sr-only">Open main menu</span>
               <svg
@@ -43,15 +48,20 @@ export default function Navbar() {
                 />
               </svg>
             </button>
+            <button
+              onClick={toggleTheme}
+              className="p-2 text-gray-500 rounded-lg hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+            >
+              {theme === "dark" ? "Light Mode" : "Dark Mode"}
+            </button>
           </div>
           <div
-            className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1"
+            className={`items-center justify-end ${
+              isOpen ? "flex" : "hidden"
+            } w-full md:flex md:w-auto md:order-1`} // Step 4: Conditional rendering
             id="navbar-sticky"
           >
-            <ul className="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <DropMenu />
-              </li>
+            <ul className="flex justify-end flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
               <li>
                 <a
                   href="#"
@@ -75,6 +85,24 @@ export default function Navbar() {
                 >
                   Contact
                 </a>
+              </li>
+
+              <li>
+                <Button
+                  className={
+                    "bg-white mr-2 text-slate-950 border-solid border-2"
+                  }
+                >
+                  Log in
+                </Button>
+              </li>
+              <li>
+                <Button className={buttonVariants({ variant: "dark" })}>
+                  Sign up
+                </Button>
+              </li>
+              <li>
+                <DropMenu />
               </li>
             </ul>
           </div>
